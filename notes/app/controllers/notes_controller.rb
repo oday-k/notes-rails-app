@@ -1,4 +1,5 @@
 class NotesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_note, except: %i[create index]
   before_action :set_notes, only: :index
 
@@ -7,9 +8,12 @@ class NotesController < ApplicationController
   end
 
   def create
-    # TODO: return 404 for invalid notes
-    @note = Note.create!(note_params.merge(user_id: 1))
-    render json: @note, status: :created
+    @note = Note.new(note_params.merge(user_id: 1))
+    if @note.save
+      render json: @note, status: :created
+    else
+      render json: { erros: { note: @note.errors.full_messages } }, status: :bad_request
+    end
   end
 
   def show
@@ -17,8 +21,11 @@ class NotesController < ApplicationController
   end
 
   def update
-    @note.update(note_params)
-    render json: @note, status: :ok
+    if @note.update(note_params)
+      render json: @note, status: :ok
+    else
+      render json: { erros: { note: @note.errors.full_messages } }, status: :bad_request
+    end
   end
 
   def destroy
@@ -33,10 +40,10 @@ class NotesController < ApplicationController
   end
 
   def set_note
-    @note = Note.find(params[:id])
+    @note = current_user.notes.find(params[:id])
   end
 
   def set_notes
-    @notes = Note.all
+    @notes = current_user.notes
   end
 end
