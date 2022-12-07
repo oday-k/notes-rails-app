@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_07_195345) do
+ActiveRecord::Schema.define(version: 2022_12_07_205634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,7 +35,9 @@ ActiveRecord::Schema.define(version: 2022_12_07_195345) do
     t.integer "access_level", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "owner_id"
     t.index ["note_id"], name: "index_shares_on_note_id"
+    t.index ["owner_id"], name: "index_shares_on_owner_id"
     t.index ["user_id"], name: "index_shares_on_user_id"
   end
 
@@ -55,4 +57,5 @@ ActiveRecord::Schema.define(version: 2022_12_07_195345) do
 
   add_foreign_key "shares", "notes"
   add_foreign_key "shares", "users"
+  add_foreign_key "shares", "users", column: "owner_id"
 end
