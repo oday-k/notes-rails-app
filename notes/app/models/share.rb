@@ -6,7 +6,7 @@ class Share < ApplicationRecord
 
   enum access_level: { view: 0, edit: 1 }
 
-  before_validation -> { self.owner_id = note.user.id }
+  before_validation :add_owner
 
   validates_inclusion_of :access_level, in: :access_level
 
@@ -14,8 +14,12 @@ class Share < ApplicationRecord
 
   private
 
+  def add_owner
+    self.owner = note.user if note.present?
+  end
+
   def not_sharing_to_owner
-    return unless user_id == owner_id
+    return unless user == owner
 
     errors.add(:user, "can't be the owner")
   end
