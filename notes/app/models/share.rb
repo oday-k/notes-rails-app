@@ -8,7 +8,7 @@ class Share < ApplicationRecord
 
   before_validation :add_owner
 
-  validates_inclusion_of :access_level, in: :access_level
+  validates_inclusion_of :access_level, in: access_levels
 
   validate :not_sharing_to_owner
 
