@@ -8,7 +8,7 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note = Note.new(note_params.merge(user_id: 1))
+    @note = Note.new(note_params.merge(user: current_user))
     if @note.save
       render json: @note, status: :created
     else
