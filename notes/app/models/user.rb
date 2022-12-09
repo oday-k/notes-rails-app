@@ -12,5 +12,5 @@ class User < ApplicationRecord
 
   has_many :notes
   has_many :shares
-  has_many :owned_shares, class_name: 'Share', foreign_key: 'owner_id'
+  has_many :owned_shares, class_name: 'Share', foreign_key: 'owner_id', dependent: :destroy
 end
