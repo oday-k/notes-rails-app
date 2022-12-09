@@ -1,7 +1,8 @@
 class Share < ApplicationRecord
+  # TODO: make record unique
   belongs_to :user
   belongs_to :note
-  belongs_to :user, foreign_key: 'user_id'
+  belongs_to :owner, class_name: 'User'
 
   enum access_level: { view: 0, edit: 1 }
 

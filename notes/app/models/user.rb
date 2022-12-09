@@ -11,4 +11,6 @@ class User < ApplicationRecord
   end
 
   has_many :notes
+  has_many :shares
+  has_many :owned_shares, class_name: 'Share', foreign_key: 'owner_id'
 end
