@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_07_205634) do
+ActiveRecord::Schema.define(version: 2022_12_10_100947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2022_12_07_205634) do
     t.bigint "owner_id"
     t.index ["note_id"], name: "index_shares_on_note_id"
     t.index ["owner_id"], name: "index_shares_on_owner_id"
+    t.index ["user_id", "note_id"], name: "index_shares_on_user_id_and_note_id", unique: true
     t.index ["user_id"], name: "index_shares_on_user_id"
   end
 

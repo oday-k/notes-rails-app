@@ -1,5 +1,4 @@
 class Share < ApplicationRecord
-  # TODO: make record unique
   belongs_to :user
   belongs_to :note
   belongs_to :owner, class_name: 'User'
@@ -9,6 +8,7 @@ class Share < ApplicationRecord
   before_validation :add_owner
 
   validates_inclusion_of :access_level, in: access_levels
+  validates_uniqueness_of :note_id, scope: :user_id, message: 'is already shared'
 
   validate :not_sharing_to_owner
 
