@@ -2,9 +2,10 @@ class NotesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_note, except: %i[create index]
   before_action :set_notes, only: :index
+  before_action :set_shared_notes, only: :index
 
   def index
-    render json: @notes, status: :ok
+    render json: { notes: @notes, shared_notes: @shared_notes }, status: :ok
   end
 
   def create
@@ -40,10 +41,19 @@ class NotesController < ApplicationController
   end
 
   def set_note
-    @note = current_user.notes.find(params[:id])
+    @note = current_user.notes.find_by(id: params[:id]) || set_shared_note
+    raise ActiveRecord::RecordNotFound unless @note
   end
 
   def set_notes
     @notes = current_user.notes
+  end
+
+  def set_shared_notes
+    @shared_notes = current_user.shared_notes
+  end
+
+  def set_shared_note
+    current_user.shared_notes.find(params[:id]) if current_user.can_do_action?(params[:id], action_name)
   end
 end
