@@ -37,7 +37,7 @@ class NotesController < ApplicationController
   private
 
   def note_params
-    params.require(:note).permit(:text)
+    params.require(:note).permit(:text,  :image)
   end
 
   def set_note
