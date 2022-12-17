@@ -1,0 +1,255 @@
+---
+openapi: 3.0.3
+info:
+  title: notes
+  version: 1.0.0
+servers: []
+paths:
+  "/notes":
+    get:
+      summary: index
+      tags:
+      - Note
+      responses:
+        '200':
+          description: returns all notes created or shared to the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          nullable: true
+                        text:
+                          type: string
+                        created_at:
+                          nullable: true
+                        updated_at:
+                          nullable: true
+                        user_id:
+                          nullable: true
+                  shared_notes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          nullable: true
+                        text:
+                          type: string
+                        created_at:
+                          nullable: true
+                        updated_at:
+                          nullable: true
+                        user_id:
+                          nullable: true
+              example:
+                notes:
+                - id: 
+                  text: Dolores quasi et. Quia eaque eius. Itaque mollitia sunt.
+                  created_at: 
+                  updated_at: 
+                  user_id: 
+                shared_notes:
+                - id: 
+                  text: Illum amet ut. Qui qui sint. Rerum fugiat et.
+                  created_at: 
+                  updated_at: 
+                  user_id: 
+    post:
+      summary: create
+      tags:
+      - Note
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+            example:
+              note:
+                text: this is an invalid text
+      responses:
+        '201':
+          description: creates a note with valid params
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  __expired:
+                    type: boolean
+                  name:
+                    type: string
+              example:
+                __expired: false
+                name: Note_1001
+        '400':
+          description: returns errors with invalid params
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erros:
+                    type: object
+                    properties:
+                      note:
+                        type: array
+                        items:
+                          type: string
+              example:
+                erros:
+                  note:
+                  - invalid text
+  "/notes/{id}":
+    get:
+      summary: show
+      tags:
+      - Note
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 5641136797
+      responses:
+        '200':
+          description: returns the note with the given id when it is shared with the
+            user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    nullable: true
+                  text:
+                    type: string
+                  created_at:
+                    nullable: true
+                  updated_at:
+                    nullable: true
+                  user_id:
+                    nullable: true
+              example:
+                id: 
+                text: Laborum blanditiis et. Consectetur ea nihil. Dolor et atque.
+                created_at: 
+                updated_at: 
+                user_id: 
+        '404':
+          description: returns not_found when the note does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: record not found
+    put:
+      summary: update
+      tags:
+      - Note
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 9873815406
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+            example:
+              note:
+                text: edited text
+      responses:
+        '200':
+          description: updates the shared note with the given id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  __expired:
+                    type: boolean
+                  name:
+                    type: string
+              example:
+                __expired: false
+                name: Note_1004
+        '400':
+          description: returns bad_request with invalid params
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erros:
+                    type: object
+                    properties:
+                      note:
+                        type: array
+                        items: {}
+              example:
+                erros:
+                  note: []
+        '404':
+          description: return not_found when the user cannot edit the shared note
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: record not found
+    delete:
+      summary: destroy
+      tags:
+      - Note
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 6381081382
+      responses:
+        '200':
+          description: deletes the note with the given id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  __expired:
+                    type: boolean
+                  name:
+                    type: string
+              example:
+                __expired: false
+                name: Note_1006
