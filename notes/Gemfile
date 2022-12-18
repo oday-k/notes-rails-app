@@ -37,6 +37,7 @@ group :development, :test do
   gem 'rspec-activemodel-mocks', '~> 1.1'
   gem 'rspec-openapi', '~> 0.7.2'
   gem 'rspec-rails'
+  gem 'simplecov', '~> 0.21.2'
 end
 
 group :development do
