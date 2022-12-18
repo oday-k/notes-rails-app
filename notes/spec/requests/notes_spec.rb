@@ -3,15 +3,15 @@ require 'spec_helper'
 require 'faker'
 require 'byebug'
 
-RSpec.describe 'NotesControllers', type: :request do
+RSpec.describe 'Notes', type: :request do
   RSpec.configure do |config|
     config.include Devise::Test::IntegrationHelpers, type: :request
   end
 
   let(:text) { Faker::Lorem.paragraph }
-  # let(:image) { Random.new.bytes(255 * 255 * 8) }
   let(:note) { mock_model('Note', text: text) }
   let(:user) { create(:user) }
+  let(:note_id) { Faker::Number.number.to_s }
 
   before :each do
     sign_in user
@@ -29,8 +29,6 @@ RSpec.describe 'NotesControllers', type: :request do
   end
 
   describe 'GET /notes/{note_id}' do
-    note_id = Faker::Number.number.to_s
-
     it 'returns the note with the given id' do
       expect(user.notes).to receive(:find_by)
         .with(id: note_id)
@@ -89,8 +87,7 @@ RSpec.describe 'NotesControllers', type: :request do
   end
 
   describe 'PUT /notes/{note_id}' do
-    note_id = Faker::Number.number.to_s
-    new_text = 'edited text'
+    let(:new_text) { 'edited text' }
     let(:dummy_note) { build(:note) }
 
     it 'updates the note with the given id' do
