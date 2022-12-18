@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :validatable,
          jwt_revocation_strategy: JwtDenylist
 
-  has_many :notes
+  has_many :notes, dependent: :destroy
   has_many :shares
   has_many :owned_shares, class_name: 'Share', foreign_key: 'owner_id', dependent: :destroy
   has_many :shared_notes, through: :shares, source: :note
