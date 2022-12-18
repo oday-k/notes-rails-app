@@ -11,8 +11,8 @@ class SharesController < ApplicationController
     @share = Share.new(share_params)
 
     # is there a better way to write this?
-    unless current_user.notes.find_by(id: @share.note.id)
-      render json: { error: { share: 'must own the note to share' } }, status: :bad_request
+    unless current_user.notes.find_by(id: @share.note&.id)
+      render json: { errors: { share: 'must own the note to share' } }, status: :bad_request
       return
     end
 
@@ -26,7 +26,7 @@ class SharesController < ApplicationController
   end
 
   def show
-    render json: { shares: @share }, status: :ok
+    render json: { share: @share }, status: :ok
   end
 
   def update
