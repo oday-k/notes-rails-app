@@ -1,10 +1,9 @@
 class SharesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_shares, only: :index
   before_action :set_share, except: %i[index create]
 
   def index
-    render json: { shares: @shares }, status: :ok
+    render json: { shares: current_user.owned_shares }, status: :ok
   end
 
   def create
@@ -55,7 +54,4 @@ class SharesController < ApplicationController
     @share = current_user.owned_shares.find(params[:id])
   end
 
-  def set_shares
-    @shares = current_user.owned_shares
-  end
 end
