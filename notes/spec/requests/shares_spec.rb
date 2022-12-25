@@ -54,13 +54,26 @@ RSpec.describe 'Shares', type: :request do
         .with(params[:note_id])
         .and_return note
 
-      expect(note).to receive(:shares)
-      expect(note).to receive(:shares)
+      expect(note).to receive(:shares).twice
       expect(note.shares).to receive(:new)
         .with(user_id: params[:user_id])
         .and_return share
 
+      dummy_user = build(:user)
+      dummy_note = build(:note)
+
       expect(share).to receive(:save).and_return true
+      expect(share).to receive(:owner).and_return user
+      expect(share).to receive(:user).and_return dummy_user
+      expect(share).to receive(:note).and_return dummy_note
+
+      mock_mailer = double(NotificationMailer)
+
+      expect(NotificationMailer).to receive(:with)
+        .with(user: dummy_user, owner: user, note: dummy_note)
+        .and_return mock_mailer
+
+      expect(mock_mailer).to receive_message_chain(%i[share_notification deliver_later])
 
       post '/shares', params: { share: params }
 
@@ -69,8 +82,7 @@ RSpec.describe 'Shares', type: :request do
 
     it 'returns bad_request with invalid params' do
       expect(user.notes).to receive(:find).and_return note
-      expect(note).to receive(:shares)
-      expect(note).to receive(:shares)
+      expect(note).to receive(:shares).twice
       expect(note.shares).to receive(:new).and_return share
       expect(share).to receive(:save).and_return false
 
