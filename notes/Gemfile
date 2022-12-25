@@ -43,8 +43,10 @@ end
 group :development do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'debase', '~> 0.2.4'
   gem 'pry-rails', '~> 0.3.9'
   gem 'rubocop', '~> 1.40'
+  gem 'ruby-debug-ide', '~> 0.7.3'
   gem 'solargraph', '~> 0.47.2'
   gem 'spring'
 end
@@ -54,3 +56,6 @@ gem 'devise', '~> 4.8'
 gem 'devise-jwt', '~> 0.10.0'
 gem 'jsonapi-rails', '~> 0.4.1'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem 'aws-sdk-s3', '~> 1.117'
+gem 'sidekiq', '~> 6.5'
