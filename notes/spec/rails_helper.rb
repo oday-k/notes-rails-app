@@ -72,3 +72,10 @@ end
 def strong_params(params)
   ActionController::Parameters.new(params).permit!
 end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
