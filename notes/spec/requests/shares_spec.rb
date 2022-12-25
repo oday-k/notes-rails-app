@@ -8,6 +8,7 @@ RSpec.describe 'Shares', type: :request do
   let(:user) { create(:user) }
   let(:share) { mock_model('Share', user_id: 1, note_id: 1) }
   let(:share_id) { Faker::Number.number.to_s }
+  let(:note) { mock_model('Note', user_id: user.id) }
 
   before :each do
     sign_in user
@@ -49,11 +50,16 @@ RSpec.describe 'Shares', type: :request do
     let(:params) { { user_id: '5', note_id: '13' } }
 
     it 'creates a share with valid params' do
-      expect(Share).to receive(:new)
-        .with(strong_params(params))
+      expect(user.notes).to receive(:find)
+        .with(params[:note_id])
+        .and_return note
+
+      expect(note).to receive(:shares)
+      expect(note).to receive(:shares)
+      expect(note.shares).to receive(:new)
+        .with(user_id: params[:user_id])
         .and_return share
-      expect(share).to receive(:note)
-      expect(user.notes).to receive(:find_by).and_return true
+
       expect(share).to receive(:save).and_return true
 
       post '/shares', params: { share: params }
@@ -62,9 +68,10 @@ RSpec.describe 'Shares', type: :request do
     end
 
     it 'returns bad_request with invalid params' do
-      expect(Share).to receive(:new).and_return share
-      expect(share).to receive(:note)
-      expect(user.notes).to receive(:find_by).and_return true
+      expect(user.notes).to receive(:find).and_return note
+      expect(note).to receive(:shares)
+      expect(note).to receive(:shares)
+      expect(note.shares).to receive(:new).and_return share
       expect(share).to receive(:save).and_return false
 
       post '/shares', params: { share: params }
@@ -72,15 +79,11 @@ RSpec.describe 'Shares', type: :request do
       expect(response.bad_request?).to be_truthy
     end
 
-    it 'returns bad_request when trying to share a note you do not own' do
-      expect(Share).to receive(:new).and_return share
-      expect(share).to receive(:note)
-      expect(user.notes).to receive(:find_by).and_return false
-
+    it 'returns not_fund when trying to share a note you do not own' do
+      expect(user.notes).to receive(:find).and_raise ActiveRecord::RecordNotFound
       post '/shares', params: { share: params }
 
-      expect(response.bad_request?).to be_truthy
-      expect(response.parsed_body['errors']['share']).to be_eql('must own the note to share')
+      expect(response.not_found?).to be_truthy
     end
   end
 
