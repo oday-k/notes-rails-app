@@ -12,6 +12,7 @@ class SharesController < ApplicationController
                          .shares.new(user_id: share_params[:user_id])
 
     if @share.save
+      notify_user
       render json: { share: @share }, status: :created
 
     else
@@ -54,4 +55,9 @@ class SharesController < ApplicationController
     @share = current_user.owned_shares.find(params[:id])
   end
 
+  def notify_user
+    NotificationMailer.with(user: @share.user,
+                            owner: @share.owner,
+                            note: @share.note).share_notification.deliver_later
+  end
 end
